@@ -1,4 +1,4 @@
-namespace ExcangeCourse.Models;
+namespace ExchangeCourse.Models;
 
 public class Currency
 {

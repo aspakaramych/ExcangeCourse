@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcangeCourse", "ExcangeCourse\ExcangeCourse.csproj", "{E32FF08F-8086-4F53-A84C-D0ACFC135B2C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExchangeCourse", "ExchangeCourse\ExchangeCourse.csproj", "{E32FF08F-8086-4F53-A84C-D0ACFC135B2C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
