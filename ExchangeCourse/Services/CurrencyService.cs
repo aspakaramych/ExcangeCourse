@@ -59,6 +59,11 @@ public class CurrencyService : ICurrencyService
             _context.Currencies.Add(currencyEntity);
             await _context.SaveChangesAsync();
         }
+        catch (ArgumentException e)
+        {
+            _logger.LogError(e, e.Message);
+            throw;
+        }
         catch (Exception e)
         {
             _logger.LogError(e, e.Message);

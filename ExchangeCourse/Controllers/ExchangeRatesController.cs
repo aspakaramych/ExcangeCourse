@@ -45,6 +45,17 @@ public class ExchangeRatesController : ControllerBase
 
         try
         {
+            var baseCurrency = await _currencyService.GetCurrency(baseCode);
+            var targetCurrency = await _currencyService.GetCurrency(targetCode);
+        }
+        catch (KeyNotFoundException e)
+        {
+            _logger.LogError(e, e.Message);
+            return NotFound("one or more currencies are not found");
+        }
+        
+        try
+        {
             var exchangeRate = await _exchangeRateService.GetExchangeRateById(baseCode, targetCode);
             var response = exchangeRate.toContract();
             return Ok(response);
@@ -63,6 +74,7 @@ public class ExchangeRatesController : ControllerBase
         {
             return BadRequest("one of code is empty");
         }
+
         try
         {
             var baseCurrency = await _currencyService.GetCurrency(baseCode);
@@ -73,7 +85,7 @@ public class ExchangeRatesController : ControllerBase
                 TargetCurrency = targetCurrency,
                 Rate = rate
             };
-            
+
             var exchangeRate = await _exchangeRateService.AddExchangeRate(newExchangeRate);
             var response = exchangeRate.toContract();
             return Ok(response);
@@ -81,6 +93,11 @@ public class ExchangeRatesController : ControllerBase
         catch (KeyNotFoundException keyNotFoundException)
         {
             return NotFound("one of currency not found");
+        }
+        catch (ArgumentException e)
+        {
+            _logger.LogError(e, e.Message);
+            return StatusCode(409);
         }
         catch (Exception e)
         {
@@ -105,12 +122,13 @@ public class ExchangeRatesController : ControllerBase
         }
         catch (KeyNotFoundException keyNotFoundException)
         {
+            _logger.LogError(keyNotFoundException, keyNotFoundException.Message);
             return NotFound("one of currency not found");
         }
         catch (Exception e)
         {
             _logger.LogError(e, e.Message);
-            return StatusCode(409, "exchange rate already exists");
+            return StatusCode(500);
         }
     }
 }

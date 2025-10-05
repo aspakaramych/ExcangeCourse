@@ -61,14 +61,33 @@ public class CurrencyController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<CurrencyResponse>> CreateCurrency([FromBody] CurrencyRequest currencyRequest)
     {
+        if (string.IsNullOrEmpty(currencyRequest.name) || string.IsNullOrEmpty(currencyRequest.code) ||
+            string.IsNullOrEmpty(currencyRequest.sign))
+        {
+            return BadRequest("one or more fields are required");
+        }
+        
         var currencyModel = new Currency
         {
             FullName = currencyRequest.name,
             Code = currencyRequest.code,
             Sign = currencyRequest.code
         };
-        var currency = await _currencyService.CreateCurrency(currencyModel);
-        var currencyResponse = currency.toContract();
-        return Ok(currencyResponse);
+        try
+        {
+            var currency = await _currencyService.CreateCurrency(currencyModel);
+            var currencyResponse = currency.toContract();
+            return StatusCode(201, currencyResponse);
+        }
+        catch (ArgumentException e)
+        {
+            _logger.LogError(e, e.Message);
+            return StatusCode(409, "this currency already exists");
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, e.Message);
+            return StatusCode(500);
+        }
     }
 }
