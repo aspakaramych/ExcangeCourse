@@ -10,14 +10,15 @@ public class ExchangeRateEntity
     [Column("Id")]
     public int Id { get; set; }
     
-    [ForeignKey("Currencies")]
+
     [Required]
-    [Column("BaseCurrency")]
+    [Column("BaseCurrencyId")]
+    public int BaseCurrencyId { get; set; }
     public CurrencyEntity BaseCurrency { get; set; }
     
-    [ForeignKey("Currencies")]
     [Required]
-    [Column("TargetCurrency")]
+    [Column("TargetCurrencyId")]
+    public int TargetCurrencyId { get; set; }
     public CurrencyEntity TargetCurrency { get; set; }
     
     [Required]

@@ -7,9 +7,8 @@ public class ApplicationDbContext : DbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
-        
     }
-    
+
     public DbSet<CurrencyEntity> Currencies { get; set; }
     public DbSet<ExchangeRateEntity> ExchangeRates { get; set; }
 
@@ -20,15 +19,22 @@ public class ApplicationDbContext : DbContext
             .IsUnique();
 
         modelBuilder.Entity<ExchangeRateEntity>()
-            .HasOne<CurrencyEntity>()
-            .WithOne()
-            .HasForeignKey<ExchangeRateEntity>(e => e.BaseCurrency);
+            .HasOne(e => e.BaseCurrency)
+            .WithMany()
+            .HasForeignKey(e => e.BaseCurrencyId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         modelBuilder.Entity<ExchangeRateEntity>()
-            .HasOne<CurrencyEntity>()
-            .WithOne()
-            .HasForeignKey<ExchangeRateEntity>(e => e.TargetCurrency);
-            
-        
+            .HasOne(e => e.TargetCurrency)
+            .WithMany()
+            .HasForeignKey(e => e.TargetCurrencyId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<ExchangeRateEntity>()
+            .HasIndex(e => new { e.BaseCurrencyId, e.TargetCurrencyId })
+            .IsUnique();
+
+
         base.OnModelCreating(modelBuilder);
     }
 }
