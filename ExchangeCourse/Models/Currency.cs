@@ -9,7 +9,7 @@ public class Currency
     public string FullName { get; set; }
     public string Sign { get; set; }
 
-    public CurrencyResponse toContract()
+    public CurrencyResponse ToContract()
     {
         return new CurrencyResponse(Id, FullName, Code, Sign);
     }

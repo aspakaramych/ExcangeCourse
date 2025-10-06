@@ -9,9 +9,9 @@ public class ExchangeRate
     public Currency TargetCurrency { get; set; }
     public decimal Rate { get; set; }
 
-    public ExchangeRateResponse toContract()
+    public ExchangeRateResponse ToContract()
     {
-        return new ExchangeRateResponse(Id, BaseCurrency.toContract(), TargetCurrency.toContract(), Rate);
+        return new ExchangeRateResponse(Id, BaseCurrency.ToContract(), TargetCurrency.ToContract(), Rate);
     }
 
     public override string ToString()

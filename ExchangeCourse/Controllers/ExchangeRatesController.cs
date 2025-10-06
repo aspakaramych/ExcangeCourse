@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ExchangeCourse.Controllers;
 
-[Route("api/[controller]")]
+[ApiController]
+[Route("api")]
 public class ExchangeRatesController : ControllerBase
 {
     private readonly IExchangeRateService _exchangeRateService;
@@ -19,13 +20,13 @@ public class ExchangeRatesController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet]
+    [HttpGet("/exchangeRates")]
     public async Task<ActionResult<IEnumerable<ExchangeRateResponse>>> Get()
     {
         try
         {
             var exchangeRates = await _exchangeRateService.GetExchangeRates();
-            var response = exchangeRates.Select(e => e.toContract());
+            var response = exchangeRates.Select(e => e.ToContract());
             return Ok(response);
         }
         catch (Exception e)
@@ -35,7 +36,7 @@ public class ExchangeRatesController : ControllerBase
         }
     }
 
-    [HttpGet("/{baseCode}+{targetCode}")]
+    [HttpGet("/exchangeRates/{baseCode}+{targetCode}")]
     public async Task<ActionResult<ExchangeRateResponse>> Get(string baseCode, string targetCode)
     {
         if (string.IsNullOrEmpty(baseCode) || string.IsNullOrEmpty(targetCode))
@@ -57,7 +58,7 @@ public class ExchangeRatesController : ControllerBase
         try
         {
             var exchangeRate = await _exchangeRateService.GetExchangeRateById(baseCode, targetCode);
-            var response = exchangeRate.toContract();
+            var response = exchangeRate.ToContract();
             return Ok(response);
         }
         catch (Exception e)
@@ -67,7 +68,7 @@ public class ExchangeRatesController : ControllerBase
         }
     }
     
-    [HttpPost]
+    [HttpPost("/exchangeRates")]
     public async Task<ActionResult<ExchangeRateResponse>> Create(string baseCode, string targetCode, decimal rate)
     {
         if (string.IsNullOrEmpty(baseCode) || string.IsNullOrEmpty(targetCode))
@@ -87,7 +88,7 @@ public class ExchangeRatesController : ControllerBase
             };
 
             var exchangeRate = await _exchangeRateService.AddExchangeRate(newExchangeRate);
-            var response = exchangeRate.toContract();
+            var response = exchangeRate.ToContract();
             return Ok(response);
         }
         catch (KeyNotFoundException keyNotFoundException)
@@ -106,7 +107,7 @@ public class ExchangeRatesController : ControllerBase
         }
     }
     
-    [HttpPatch("/{baseCode}+{targetCode}")]
+    [HttpPatch("/exchangeRates/{baseCode}+{targetCode}")]
     public async Task<ActionResult<ExchangeRateResponse>> Update(string baseCode, string targetCode, decimal rate)
     {
         if (string.IsNullOrEmpty(baseCode) || string.IsNullOrEmpty(targetCode) || rate == 0)
@@ -117,7 +118,7 @@ public class ExchangeRatesController : ControllerBase
         {
             
             var exchangeRate = await _exchangeRateService.UpdateExchangeRate(baseCode, targetCode, rate);
-            var response = exchangeRate.toContract();
+            var response = exchangeRate.ToContract();
             return Ok(response);
         }
         catch (KeyNotFoundException keyNotFoundException)

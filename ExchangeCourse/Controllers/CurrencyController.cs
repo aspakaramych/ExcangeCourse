@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ExchangeCourse.Controllers;
 
-[Route("api/[controller]")]
+[ApiController]
+[Route("api")]
 public class CurrencyController : ControllerBase
 {
     private readonly ICurrencyService _currencyService;
@@ -17,13 +18,13 @@ public class CurrencyController : ControllerBase
         _logger = logger;
     }
     
-    [HttpGet]
+    [HttpGet("/currencies")]
     public async Task<ActionResult<ICollection<CurrencyResponse>>> Get()
     {
         try
         {
             var currencies = await _currencyService.GetCurrencies();
-            var currenciesResponse = currencies.Select(c => c.toContract());
+            var currenciesResponse = currencies.Select(c => c.ToContract());
             return Ok(currenciesResponse);
         }
         catch (Exception e)
@@ -32,7 +33,7 @@ public class CurrencyController : ControllerBase
             return StatusCode(500);
         }
     }
-    [HttpGet("/{code}")]
+    [HttpGet("/currency/{code}")]
     public async Task<ActionResult<CurrencyResponse>> GetCurrency(string? code)
     {
         if (code == null)
@@ -43,7 +44,7 @@ public class CurrencyController : ControllerBase
         try
         {
             var currency = await _currencyService.GetCurrency(code);
-            var currencyResponse = currency.toContract();
+            var currencyResponse = currency.ToContract();
             return Ok(currencyResponse);
         }
         catch (KeyNotFoundException e)
@@ -58,7 +59,7 @@ public class CurrencyController : ControllerBase
         }
     }
     
-    [HttpPost]
+    [HttpPost("/currencies")]
     public async Task<ActionResult<CurrencyResponse>> CreateCurrency([FromBody] CurrencyRequest currencyRequest)
     {
         if (string.IsNullOrEmpty(currencyRequest.name) || string.IsNullOrEmpty(currencyRequest.code) ||
@@ -76,7 +77,7 @@ public class CurrencyController : ControllerBase
         try
         {
             var currency = await _currencyService.CreateCurrency(currencyModel);
-            var currencyResponse = currency.toContract();
+            var currencyResponse = currency.ToContract();
             return StatusCode(201, currencyResponse);
         }
         catch (ArgumentException e)

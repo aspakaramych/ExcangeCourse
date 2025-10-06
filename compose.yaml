@@ -1,0 +1,39 @@
+﻿services:
+  db:
+    image: postgres:17
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=fhsfhsuhbfusnfhreuhfksjn578372834
+      - POSTGRES_DB=Course
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres", "-d", "postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - app-network
+
+  
+  backend:
+    build:
+      context: .
+      dockerfile: ExchangeCourse/Dockerfile
+    ports:
+      - "13574:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge
